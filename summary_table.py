@@ -1,56 +1,34 @@
-# from db import CellDataLoader
-# from db import CellDataInserter
+from db import CellDataLoader
+import pandas as pd
 
-import sqlite3
+class CellPopulationSummary:
+    def __init__(self, db_path="cell_data.db"):
+        self.loader = CellDataLoader(db_path)
 
-# Part II
+    def compute_summary(self):
+        query = """
+                    SELECT
+                        c.sample,
+                        SUM(c.count) OVER (PARTITION BY c.sample) AS total_count,
+                        c.cell_type AS population,
+                        c.count,
+                        ROUND(100.0 * c.count / SUM(c.count) OVER (PARTITION BY c.sample), 2) AS percentage
+                    FROM cell_counts AS c
+                    ORDER BY c.sample, c.cell_type
+                """
 
-# Connect to the database
-conn = sqlite3.connect("cell_data.db")
-cursor = conn.cursor()
+        self.loader.cursor.execute(query)
+        rows = self.loader.cursor.fetchall()
 
-# # Execute the query
-# cursor.execute("""
-#     SELECT
-#         c.sample,
-#         SUM(c.count) OVER (PARTITION BY c.sample) AS total_count,
-#         c.cell_type AS population,
-#         c.count,
-#         ROUND(100.0 * c.count / SUM(c.count) OVER (PARTITION BY c.sample),
-#         2) AS percentage
-#     FROM cell_counts AS c
-#     ORDER BY c.sample, c.cell_type
-#     LIMIT 10
-# """)
-# rows = cursor.fetchall()
-#
-# # Print all rows
-# for row in rows:
-#     print(row)
+        cell_summary_df = pd.DataFrame(rows, columns=['sample', 'total_count', 'population', 'count', 'percentage'])
 
-# PART III
+        cell_summary_df.to_sql('cell_summary', self.loader.conn, if_exists='replace', index=False)
 
-cursor.execute("""
-    SELECT
-         c.cell_type,
-         ROUND(100.0 * SUM(CASE WHEN sa.response = 'yes' THEN c.count ELSE 0 END) /
-               SUM(SUM(CASE WHEN sa.response = 'yes' THEN c.count ELSE 0 END)) OVER (), 2) AS yes_percentage,
-         ROUND(100.0 * SUM(CASE WHEN sa.response = 'no' THEN c.count ELSE 0 END) /
-               SUM(SUM(CASE WHEN sa.response = 'no' THEN c.count ELSE 0 END)) OVER (), 2) AS no_percentage
-    FROM cell_counts AS c
-    JOIN samples AS sa ON sa.sample = c.sample
-    WHERE sa.sample_type = 'PBMC'
-      AND sa.treatment = 'miraclib'
-      AND sa.condition = 'melanoma'
-    GROUP BY c.cell_type
-""")
-rows = cursor.fetchall()
+        return cell_summary_df
 
- # SUM(c.count) OVER (PARTITION BY c.sample) AS total_count,
+def main():
+    summarizer = CellPopulationSummary()
+    cell_summary_df = summarizer.compute_summary()
 
-# Print all rows
-for row in rows:
-    print(row)
-
-# Close the connection
-conn.close()
+if __name__ == "__main__":
+    main()
