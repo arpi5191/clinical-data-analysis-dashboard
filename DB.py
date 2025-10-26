@@ -7,16 +7,18 @@ class CellDataLoader:
         self.cursor = self.conn.cursor()
 
     def create_projects_table(self):
+        self.cursor.execute("DROP TABLE IF EXISTS projects")
         self.cursor.execute("""
-        CREATE TABLE IF NOT EXISTS projects (
+        CREATE TABLE projects (
             project_id INTEGER PRIMARY KEY AUTOINCREMENT,
             project TEXT NOT NULL UNIQUE
         )
         """)
 
     def create_subjects_table(self):
+        self.cursor.execute("DROP TABLE IF EXISTS subjects")
         self.cursor.execute("""
-        CREATE TABLE IF NOT EXISTS subjects (
+        CREATE TABLE subjects (
             subject TEXT PRIMARY KEY,
             age INTEGER,
             sex TEXT
@@ -24,8 +26,9 @@ class CellDataLoader:
         """)
 
     def create_samples_table(self):
+        self.cursor.execute("DROP TABLE IF EXISTS samples")
         self.cursor.execute("""
-        CREATE TABLE IF NOT EXISTS samples (
+        CREATE TABLE samples (
             sample TEXT PRIMARY KEY,
             sample_type TEXT NOT NULL,
             subject TEXT NOT NULL,
@@ -33,15 +36,16 @@ class CellDataLoader:
             time_from_treatment_start REAL NOT NULL,
             treatment TEXT NOT NULL,
             condition TEXT NOT NULL,
-            response TEXT NOT NULL,
+            response TEXT,
             FOREIGN KEY (subject) REFERENCES subjects(subject),
             FOREIGN KEY (project_id) REFERENCES projects(project_id)
         )
         """)
 
     def create_cell_counts_table(self):
+        self.cursor.execute("DROP TABLE IF EXISTS cell_counts")
         self.cursor.execute("""
-        CREATE TABLE IF NOT EXISTS cell_counts (
+        CREATE TABLE cell_counts (
             cell_id INTEGER PRIMARY KEY AUTOINCREMENT,
             sample TEXT NOT NULL,
             cell_type TEXT NOT NULL,
