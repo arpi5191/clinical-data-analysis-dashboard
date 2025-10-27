@@ -149,15 +149,15 @@ class CellDataDisplay:
         # Find how significant the cell population differences are based on the p value
         if p_value is not None:
             if p_value < 0.001:
-                significance = "Highly significant"
+                significance = "Highly Significant"
             if p_value < 0.01:
-                significance = "Very significant"
+                significance = "Very Significant"
             elif p_value < 0.05:
                 significance = "Significant"
             elif p_value < 0.1:
-                significance = "Not significant"
+                significance = "Not Significant"
             else:
-                significance = "Very Not significant"
+                significance = "Very Not Significant"
         else:
             significance = "p-value could not be computed"
 
