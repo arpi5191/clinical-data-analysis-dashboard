@@ -1,13 +1,19 @@
 import streamlit as st
 import pandas as pd
 import math
+import statsmodels.formula.api as smf
+from scipy.stats import ranksums
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 class CellDataDisplay:
     """
     """
 
-    def __init__(self, summary_file_path="cell_summary.csv"):
+    def __init__(self, summary_file_path="cell_summary.csv", response_file_path = "cell_response.csv"):
+        # Read all CSV files
         self.cell_summary_df = pd.read_csv(summary_file_path)
+        self.cell_response_df = pd.read_csv(response_file_path)
 
     def show_cell_population_summary(self):
         """
@@ -30,10 +36,11 @@ class CellDataDisplay:
 
         # Set the dashboard title, subheader for Part II and markdown text to describe the visualization
         st.title("Clinical Trial Dashboard")
-        st.subheader("Part II: Cell Population Frequencies for Each Sample")
+        st.subheader("Part II: Immune Cell Population Frequencies for Each Sample")
         st.markdown("""
-        <span style='font-size:25px'>
-        Cell Population Frequency Table
+        <span style='font-size:20px'>
+        Explore the relative frequencies of each immune cell population across all samples.
+        Use the dropdown menus to filter by sample or cell type.
         </span>
         """, unsafe_allow_html=True)
 
@@ -41,9 +48,13 @@ class CellDataDisplay:
         samples = ["All"] + sorted(self.cell_summary_df["sample"].unique().tolist())
         populations = ["All"] + sorted(self.cell_summary_df["population"].unique().tolist())
 
-        # Obtain the sample and population the user selected
-        selected_sample = st.selectbox("Select Sample", samples)
-        selected_population = st.selectbox("Select Population", populations)
+        # Obtain the sample the user selected
+        st.markdown("<div style='margin-top:10px; font-size:16px'>Select Sample</div>", unsafe_allow_html=True)
+        selected_sample = st.selectbox("Select Sample", samples, label_visibility="collapsed")
+
+        # Obtain the population the user selected
+        st.markdown("<div style='margin-top:10px; font-size:16px'>Select Population</div>", unsafe_allow_html=True)
+        selected_population = st.selectbox("Select Population", populations, label_visibility="collapsed")
 
         # Initialize session state to track the last selected filters
         if "last_filters" not in st.session_state:
@@ -87,12 +98,80 @@ class CellDataDisplay:
         page_df = filtered_df.iloc[start_idx:end_idx]
 
         # Display the DataFrame and set the caption
-        st.dataframe(page_df, use_container_width=True)
+        st.dataframe(page_df, width='stretch')
         st.caption(f"Showing {start_idx + 1}–{min(end_idx, len(filtered_df))} of {len(filtered_df)} rows "
                    f"(Page {st.session_state.page_number + 1} of {max_pages + 1})")
 
     def analyze_response_statistics(self):
-        pass
+        """
+        Display boxplots comparing relative frequencies of a selected immune cell
+        population between responders and non-responders. Shows statistical significance.
+        """
+
+        # Set the dashboard title, subheader for Part III and markdown text to describe the visualization
+        st.subheader("Part III: Response-Based Analysis of Immune Cell Populations")
+        st.markdown("""
+        <span style='font-size:20px'>
+        Compare the relative frequencies of immune cell populations between responders and non-responders.
+        Select a cell type from the dropdown to view its distribution, along with statistical significance.
+        </span>
+        """, unsafe_allow_html=True)
+
+        # Obtain the unique cell types and store the cell that the user selected
+        cell_types = self.cell_response_df['population'].unique().tolist()
+
+        # Obtain the cell type the user selected
+        st.markdown("<div style='margin-top:10px; font-size:16px'>Select Cell Type</div>", unsafe_allow_html=True)
+        selected_cell = st.selectbox("Select Cell Type", cell_types, label_visibility="collapsed")
+
+        # Filter the DataFrame based on cell population
+        cell_df = self.cell_response_df[self.cell_response_df['population'] == selected_cell]
+
+        # Split the filtered DataFrame based on response
+        yes_df = cell_df[cell_df['response'] == 'yes']['percentage']
+        no_df = cell_df[cell_df['response'] == 'no']['percentage']
+
+        # Count the number of unique responses per subject identify subjects with mixed responses
+        response_counts = cell_df.groupby('subject')['response'].nunique()
+        subjects_with_mixed_responses = response_counts[response_counts > 1]
+
+        # Use the Wilcoxon rank-sum test if all subjects contain a single response type,
+        # since it assumes independent samples.
+        # If subjects have mixed responses, apply a Linear Mixed-Effects Model,
+        # which can account for repeated measures within subjects.
+        if len(subjects_with_mixed_responses) == 0:
+            stat, p_value = ranksums(yes_df, no_df)
+        else:
+            model = smf.mixedlm("percentage ~ response", cell_df, groups=cell_df["subject"])
+            result = model.fit()
+            p_value = result.pvalues.get('response[T.yes]', None)
+
+        # Find how significant the cell population differences are based on the p value
+        if p_value is not None:
+            if p_value < 0.001:
+                significance = "Highly significant"
+            if p_value < 0.01:
+                significance = "Very significant"
+            elif p_value < 0.05:
+                significance = "Significant"
+            elif p_value < 0.1:
+                significance = "Not significant"
+            else:
+                significance = "Very Not significant"
+        else:
+            significance = "p-value could not be computed"
+
+        # Display the statistical significance of the cell population difference above the boxplot
+        st.markdown(f"""<span style='font-size:19px; font-weight:bold'>{significance} (p-value = {p_value:.4f})
+                        </span>""", unsafe_allow_html=True)
+
+        # Display the boxplot
+        plt.figure(figsize=(6, 5))
+        sns.boxplot(x="response", y="percentage", data=cell_df, palette="Set2", hue="response", dodge=False, legend=False)
+        plt.title(f"{selected_cell} Frequency by Response")
+        plt.xlabel("Response")
+        plt.ylabel("Percentage (%)")
+        st.pyplot(plt)
 
     def explore_baseline_subsets(self):
         pass
@@ -103,6 +182,9 @@ def main():
 
     # Compute the cell population frequencies for each sample
     responder.show_cell_population_summary()
+
+    # Compute the cell population frequencies for melanoma patients based on response
+    responder.analyze_response_statistics()
 
 if __name__ == "__main__":
     main()
