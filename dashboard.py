@@ -3,8 +3,6 @@ import pandas as pd
 import math
 import statsmodels.formula.api as smf
 from scipy.stats import ranksums
-import matplotlib.pyplot as plt
-import seaborn as sns
 import plotly.express as px
 
 class CellDataDisplay:
