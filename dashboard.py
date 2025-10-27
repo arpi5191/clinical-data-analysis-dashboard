@@ -9,10 +9,17 @@ class CellDataDisplay:
     """
     """
 
-    def __init__(self, summary_file_path="cell_summary.csv", response_file_path = "cell_response.csv"):
+    def __init__(self, summary_file_path="cell_summary.csv", response_file_path="cell_response.csv",
+                 samples_per_project_file_path="cell_project_summary.csv",
+                 subjects_per_response_file_path="cell_response_summary.csv",
+                 subjects_per_gender_file_path="cell_gender_summary.csv"):
+
         # Read all CSV files
         self.cell_summary_df = pd.read_csv(summary_file_path)
         self.cell_response_df = pd.read_csv(response_file_path)
+        self.cell_project_df = pd.read_csv(samples_per_project_file_path)
+        self.cell_response_summary_df = pd.read_csv(subjects_per_response_file_path)
+        self.cell_gender_df = pd.read_csv(subjects_per_gender_file_path)
 
     def show_cell_population_summary(self):
         """
@@ -201,7 +208,19 @@ class CellDataDisplay:
         st.plotly_chart(fig, use_container_width=True)
 
     def explore_baseline_subsets(self):
-        pass
+        """
+        """
+
+        st.subheader("Part IV: Data Subset Analysis")
+
+        st.markdown("""
+        <span style='font-size:18px'>
+        In this section, we explore specific subsets of melanoma PBMC samples at baseline (time from treatment start = 0)
+        from patients treated with **Miraclib**.
+
+        Use the interactive charts below to filter and visualize the data.
+        </span>
+        """, unsafe_allow_html=True)
 
 def main():
     # Create an instance of CellResponseAnalysis
@@ -212,6 +231,8 @@ def main():
 
     # Compute the cell population frequencies for melanoma patients based on response
     responder.analyze_response_statistics()
+
+    responder.explore_baseline_subsets()
 
 if __name__ == "__main__":
     main()

@@ -49,7 +49,7 @@ class CellSubsetAnalysis:
         cell_samples_per_project_df = pd.DataFrame(rows, columns=['project', 'sample_count'])
 
         # Save the DataFrame information in a CSV file
-        csv_filename = "cell_samples_per_project.csv"
+        csv_filename = "cell_project_summary.csv"
         cell_samples_per_project_df.to_csv(csv_filename, index=False)
 
     def subjects_by_response(self):
@@ -87,7 +87,7 @@ class CellSubsetAnalysis:
         cell_subjects_by_response_df = pd.DataFrame(rows, columns=['response', 'subject_count'])
 
         # Save the DataFrame information in a CSV file
-        csv_filename = "cell_subjects_by_response.csv"
+        csv_filename = "cell_response_summary.csv"
         cell_subjects_by_response_df .to_csv(csv_filename, index=False)
 
     def subjects_by_sex(self):
@@ -124,7 +124,7 @@ class CellSubsetAnalysis:
         cell_subjects_by_gender_df = pd.DataFrame(rows, columns=['gender', 'subject_count'])
 
         # Save the DataFrame information in a CSV file
-        csv_filename = "cell_subjects_by_gender.csv"
+        csv_filename = "cell_gender_summary.csv"
         cell_subjects_by_gender_df.to_csv(csv_filename, index=False)
 
 def main():
