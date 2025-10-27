@@ -30,7 +30,6 @@ class CellDataDisplay:
                 - Cell population
 
             The table supports pagination to navigate large datasets.
-
         """
 
         # Set the dashboard title, subheader for Part II and markdown text to describe the visualization
