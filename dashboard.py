@@ -5,6 +5,7 @@ import statsmodels.formula.api as smf
 from scipy.stats import ranksums
 import matplotlib.pyplot as plt
 import seaborn as sns
+import plotly.express as px
 
 class CellDataDisplay:
     """
@@ -97,8 +98,10 @@ class CellDataDisplay:
         # Filter the DataFrame based on the start and end page index
         page_df = filtered_df.iloc[start_idx:end_idx]
 
-        # Display the DataFrame and set the caption
+        # Display the DataFrame
         st.dataframe(page_df, width='stretch')
+
+        # Set the caption
         st.caption(f"Showing {start_idx + 1}–{min(end_idx, len(filtered_df))} of {len(filtered_df)} rows "
                    f"(Page {st.session_state.page_number + 1} of {max_pages + 1})")
 
@@ -165,13 +168,40 @@ class CellDataDisplay:
         st.markdown(f"""<span style='font-size:19px; font-weight:bold'>{significance} (p-value = {p_value:.4f})
                         </span>""", unsafe_allow_html=True)
 
-        # Display the boxplot
-        plt.figure(figsize=(6, 5))
-        sns.boxplot(x="response", y="percentage", data=cell_df, palette="Set2", hue="response", dodge=False, legend=False)
-        plt.title(f"{selected_cell} Frequency by Response")
-        plt.xlabel("Response")
-        plt.ylabel("Percentage (%)")
-        st.pyplot(plt)
+        # Interactive boxplot using Plotly
+        fig = px.box(
+            cell_df,
+            x="response",
+            y="percentage",
+            color="response",
+            points=False,  # removes individual dots
+            hover_data=["subject", "population", "percentage"],
+            color_discrete_sequence=px.colors.qualitative.Set2,
+            title=f"{selected_cell} Frequency by Response"
+        )
+
+        # Improve layout aesthetics
+        fig.update_layout(
+            title_font=dict(size=20, family="Arial", color="black"),
+            title_x=0.0,
+            xaxis_title="Response",
+            yaxis_title="Percentage (%)",
+            xaxis=dict(
+                title_font=dict(size=18, family="Arial", color="black"),
+                tickfont=dict(size=16, family="Arial", color="black")
+            ),
+            yaxis=dict(
+                title_font=dict(size=18, family="Arial", color="black"),
+                tickfont=dict(size=14, family="Arial", color="black")
+            ),
+            hoverlabel=dict(font_size=14),
+            plot_bgcolor="white",
+            width=800,
+            height=600,
+        )
+
+        # Display in Streamlit
+        st.plotly_chart(fig, use_container_width=True)
 
     def explore_baseline_subsets(self):
         pass
