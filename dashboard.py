@@ -17,9 +17,9 @@ class CellDataDisplay:
         # Read all CSV files
         self.cell_summary_df = pd.read_csv(summary_file_path)
         self.cell_response_df = pd.read_csv(response_file_path)
-        self.cell_project_df = pd.read_csv(samples_per_project_file_path)
+        self.cell_project_summary_df = pd.read_csv(samples_per_project_file_path)
         self.cell_response_summary_df = pd.read_csv(subjects_per_response_file_path)
-        self.cell_gender_df = pd.read_csv(subjects_per_gender_file_path)
+        self.cell_gender_summary_df = pd.read_csv(subjects_per_gender_file_path)
 
     def show_cell_population_summary(self):
         """
@@ -184,25 +184,59 @@ class CellDataDisplay:
             title=f"{selected_cell} Frequency by Response"
         )
 
-        # Improve layout aesthetics
+        # Update layout and fonts, including color bar
         fig.update_layout(
-            title_font=dict(size=20, family="Arial", color="black"),
-            title_x=0.0,
-            xaxis_title="Response",
-            yaxis_title="Percentage (%)",
+            title=dict(
+                text=f"{selected_cell} Frequency by Response",
+                font=dict(size=21, color="black", family="Arial"),  # increase size here
+                x=0.5,  # center the title
+                xanchor='center'
+            ),
+            xaxis_title=dict(
+                text="Response",
+                font=dict(size=18, color="black", family="Arial")
+            ),
+            yaxis_title=dict(
+                text="Percentage (%)",
+                font=dict(size=18, color="black", family="Arial")
+            ),
             xaxis=dict(
-                title_font=dict(size=18, family="Arial", color="black"),
-                tickfont=dict(size=16, family="Arial", color="black")
+                tickfont=dict(size=15, color="black", family="Arial")
             ),
             yaxis=dict(
-                title_font=dict(size=18, family="Arial", color="black"),
-                tickfont=dict(size=14, family="Arial", color="black")
+                tickfont=dict(size=15, color="black", family="Arial")
             ),
-            hoverlabel=dict(font_size=14),
-            plot_bgcolor="white",
-            width=800,
-            height=600,
+            plot_bgcolor="rgba(0,0,0,0)",
+            legend=dict(
+                title=dict(
+                    text=self.cell_response_df.columns[0],
+                    font=dict(size=20, color="black", family="Arial")
+                ),
+                font=dict(size=18, color="black", family="Arial")
+            )
         )
+
+
+
+        # # Improve layout aesthetics
+        # fig.update_layout(
+        #     title_font=dict(size=20, family="Arial", color="black"),
+        #     title_x=0.0,
+        #     xaxis_title="Response",
+        #     yaxis_title="Percentage (%)",
+        #     xaxis=dict(
+        #         title_font=dict(size=18, family="Arial", color="black"),
+        #         tickfont=dict(size=15, family="Arial", color="black")
+        #     ),
+        #     yaxis=dict(
+        #         title_font=dict(size=18, family="Arial", color="black"),
+        #         tickfont=dict(size=15, family="Arial", color="black")
+        #     ),
+        #     hoverlabel=dict(font_size=14),
+        #     plot_bgcolor="white",
+        #     width=800,
+        #     height=600,
+        # )
 
         # Display in Streamlit
         st.plotly_chart(fig, use_container_width=True)
@@ -214,13 +248,116 @@ class CellDataDisplay:
         st.subheader("Part IV: Data Subset Analysis")
 
         st.markdown("""
-        <span style='font-size:18px'>
-        In this section, we explore specific subsets of melanoma PBMC samples at baseline (time from treatment start = 0)
-        from patients treated with **Miraclib**.
-
-        Use the interactive charts below to filter and visualize the data.
+        <span style='font-size:20px'>
+        Explore subsets of melanoma PBMC baseline samples from patients treated with Miraclib to understand
+        early treatment effects. Use the checkboxes below to select which results you’d like to display in the
+        bar charts. Hover over any bar to view the exact counts.
         </span>
         """, unsafe_allow_html=True)
+
+        fig = px.bar(
+            self.cell_project_summary_df,
+            x=self.cell_project_summary_df.columns[0],
+            y=self.cell_project_summary_df.columns[1],
+            color=self.cell_project_summary_df.columns[0],  # each bar gets a unique color
+            color_continuous_scale="Viridis"
+        )
+
+        # Update layout and fonts
+        fig.update_layout(
+            xaxis_title=dict(
+                text=self.cell_project_summary_df.columns[0].capitalize(),
+                font=dict(size=18, color="black", family="Arial")
+            ),
+            yaxis_title=dict(
+                text=self.cell_project_summary_df.columns[1].capitalize(),
+                font=dict(size=18, color="black", family="Arial")
+            ),
+            xaxis=dict(
+                tickfont=dict(size=15, color="black", family="Arial")
+            ),
+            yaxis=dict(
+                tickfont=dict(size=15, color="black", family="Arial")
+            ),
+            plot_bgcolor="rgba(0,0,0,0)",
+            legend=dict(
+                title=dict(
+                    text=self.cell_project_summary_df.columns[0],
+                    font=dict(size=20, color="black", family="Arial")
+                ),
+                font=dict(size=18, color="black", family="Arial")
+            )
+        )
+
+        st.plotly_chart(fig, use_container_width=True)
+
+
+        # fig = px.bar(
+        #     self.cell_project_summary_df,
+        #     x=self.cell_project_summary_df.columns[0],
+        #     y=self.cell_project_summary_df.columns[1],
+        #     color=self.cell_project_summary_df.columns[0],  # each bar gets a unique color
+        #     color_continuous_scale="Viridis"
+        # )
+        #
+        # # Update layout and fonts
+        # fig.update_layout(
+        #     xaxis_title=dict(
+        #         text=self.cell_project_summary_df.columns[0].capitalize(),
+        #         font=dict(size=18, color="black", family="Arial")
+        #     ),
+        #     yaxis_title=dict(
+        #         text=self.cell_project_summary_df.columns[1].capitalize(),
+        #         font=dict(size=18, color="black", family="Arial")
+        #     ),
+        #     plot_bgcolor="rgba(0,0,0,0)",
+        #     legend=dict(
+        #         title=dict(
+        #             text=self.cell_project_summary_df.columns[0],
+        #             font=dict(size=20, color="black", family="Arial")
+        #         ),
+        #         font=dict(size=18, color="black", family="Arial")
+        #     )
+        # )
+        #
+        # # Display in Streamlit
+        # st.plotly_chart(fig, use_container_width=True)
+
+
+        #
+        # fig.update_layout(
+        #                     legend=dict(
+        #                         title=self.cell_project_summary_df.columns[0],
+        #                         title_font=dict(size=16, family="Arial"),
+        #                         font=dict(size=14),
+        #                         itemsizing="constant",
+        #                         orientation="v",
+        #                     )
+        #                  )
+
+
+        # fig.update_layout(
+        #     xaxis_title=dict(
+        #         text=self.cell_project_summary_df.columns[0].lower(),
+        #         font=dict(size=18, color="black", family="Arial")
+        #     ),
+        #     yaxis_title=dict(
+        #         text=self.cell_project_summary_df.columns[1].lower(),
+        #         font=dict(size=18, color="black", family="Arial")
+        #     ),
+        #     plot_bgcolor="rgba(0,0,0,0)",
+        #     coloraxis_colorbar=dict(
+        #         title=dict(
+        #             text=self.cell_project_summary_df.columns[0],
+        #             font=dict(size=16, color="black", family="Arial")
+        #         ),
+        #         len=3,
+        #         thickness=50
+        #     ),
+        # )
+
+        # # Display in Streamlit
+        # st.plotly_chart(fig, use_container_width=True)
 
 def main():
     # Create an instance of CellResponseAnalysis
