@@ -22,7 +22,9 @@ Lastly, I created a table called cell_counts with the following fields: cell_id,
 
 #### Scalability and Performance
 
-## Project Structure
+## Code Structure
+
+### Project Folder Hierarchy
 
 - **Root Folder**  
   Contains scripts to run the entire project end-to-end:
@@ -61,6 +63,14 @@ Lastly, I created a table called cell_counts with the following fields: cell_id,
   - `test_cell_population_summary.py` — tests per-sample cell population frequencies.  
   - `test_cell_response_analysis.py` — tests PBMC sample analysis for melanoma patients treated with mircalib.
   - `test_cell_subset_analysis.py` — tests subset statistics.
+ 
+### Code Overview
+
+To keep the project well-organized and the root directory uncluttered, I created separate folders for input, output, .streamlit, code, and testing. The input folder contains the original cell_counts.csv file provided for the analysis, while the output folder stores all results generated from the analyses, making it easy to reference them for visualizations. The optional .streamlit folder includes configuration files for the dashboard, such as layout and design settings.
+
+In the code folder, scripts are organized by task to simplify execution and debugging. This includes separate files for creating database tables, loading data, performing each analysis (Parts II–IV), and generating visualizations, which also allows Streamlit to point directly to the visualization script. The testing folder contains scripts that verify the correctness of each analysis by comparing outputs against the original results, helping identify errors and track whether changes break any functionality.
+
+At the root level, I included automated scripts—run_all.sh to execute all analyses and run_test.sh to run all tests—so workflows can be run efficiently without manually typing commands. The root folder also contains the README.md, requirements.txt, and LICENSE files, ensuring the project is modular, organized, and easy to navigate.
 
 ## Key Tasks
 
@@ -84,4 +94,9 @@ Lastly, I created a table called cell_counts with the following fields: cell_id,
 7. **Interactive visualizations:** The interactive dashboard is launched using Streamlit via 
    `code/dashboard.py`. The app’s appearance, including theme and colors, is configured in 
    the `.streamlit/config.toml` file.
+
+## Usage Instructions
+
+## Link to Dashboard
+Link: https://clinical-data-analysis-dashboard-mt5yefhdzzxrezbazn6lbj.streamlit.app/
 
