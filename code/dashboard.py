@@ -49,11 +49,13 @@ class CellDataDisplay:
         st.title("Clinical Trial Dashboard")
         st.subheader("Part II: Immune Cell Population Frequencies for Each Sample")
         st.markdown("""
-        <span style='font-size:20px'>
-        Explore the relative frequencies of each immune cell population across all samples.
-        Use the dropdown menus to filter by sample or cell type.
-        </span>
-        """, unsafe_allow_html=True)
+                    <span style='font-size:20px'>
+                    Explore the relative frequencies of immune cell populations across all samples.
+                    Use the dropdown menus to filter by sample and/or cell type.
+                    Use the "Previous Page" and "Next Page" buttons below to navigate through the table pages.
+                    </span>
+                    """, unsafe_allow_html=True)
+
 
         # Obtain the samples and population types that can be selected on the dashboard using the drop down menus
         samples = ["All"] + sorted(self.cell_summary_df["sample"].unique().tolist())
@@ -124,12 +126,13 @@ class CellDataDisplay:
         # Set the dashboard title, subheader for Part III and markdown text to describe the visualization
         st.subheader("Part III: Response-Based Analysis of Immune Cell Populations")
         st.markdown("""
-        <span style='font-size:20px'>
-        Compare the relative frequencies of immune cell populations between responders and non-responders.
-        Select a cell type from the dropdown to view its distribution. Hover over any boxplot to view
-        its statistical results.
-        </span>
-        """, unsafe_allow_html=True)
+                    <span style='font-size:20px'>
+                    Compare the relative frequencies of immune cell populations in PBMC samples from melanoma
+                    patients receiving Miraclib treatment, highlighting differences between responders and non-responders.
+                    Use the dropdown menu to select a cell type, check the boxes to filter specific response groups,
+                    and hover over any boxplot to view detailed statistical information.
+                    </span>
+                    """, unsafe_allow_html=True)
 
         # Obtain the unique cell types and store the cell that the user selected
         cell_types = self.cell_response_df['population'].unique().tolist()
@@ -242,12 +245,12 @@ class CellDataDisplay:
         # Set the dashboard title, subheader for Part IV and markdown text to describe the visualization
         st.subheader("Part IV: Data Subset Analysis")
         st.markdown("""
-        <span style='font-size:20px'>
-        Explore subsets of melanoma PBMC baseline samples from patients treated with Miraclib to understand
-        early treatment effects. Use the checkboxes below to select which results you’d like to display in the
-        bar charts. Hover over any bar to view the exact counts.
-        </span>
-        """, unsafe_allow_html=True)
+                    <span style='font-size:20px'>
+                    Explore subsets of melanoma PBMC baseline samples from patients treated with Miraclib to understand
+                    early treatment effects. Use the checkboxes below to select which summaries you’d like to display in the
+                    bar charts. Hover over any bar to view the exact counts.
+                    </span>
+                    """, unsafe_allow_html=True)
 
         # Put all the dataframes and graph titles in a list
         dataframes = [(self.cell_project_summary_df, "Samples per Project"),
