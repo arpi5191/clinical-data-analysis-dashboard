@@ -99,7 +99,7 @@ At the root level, I included automated scripts—run_all.sh to execute all anal
 
 ## Usage Instructions
 
-1) **Enter the project directory**: cd clinical_data_analysis_dashboard
+1) **Enter the project directory**: cd clinical-data-analysis-dashboard-main
 2) **Run the automated script to set up the database schema and perform all analyses**: chmod +x run_all.sh followed by bash run_all.sh
 3) **Run the tests to verify that the analyses completed correctly**: chmod +x run_test.sh followed by bash run_test.sh
 4) **Launch the interactive dashboard**: streamlit run code/dashboard.py
