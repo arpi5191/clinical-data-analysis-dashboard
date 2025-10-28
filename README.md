@@ -22,6 +22,8 @@ Lastly, I created a table called cell_counts with the following fields: cell_id,
 
 #### Scalability and Performance
 
+The database is logically partitioned into separate tables representing the key entities: samples, subjects, cell types, and projects. This structure reduces RAM usage, improves query and computation speed, and enhances performance on large datasets. For instance, a dedicated projects table allows searches using integer IDs, which are much faster than string-based searches, while a separate cell types table enables easy association of samples with their corresponding cell populations. This design promotes modularity, simplifies large-scale maintenance, and employs data normalization to minimize redundancy and ensure data integrity—both essential for scalability.
+
 ## Code Structure
 
 ### Project Folder Hierarchy
@@ -96,10 +98,12 @@ At the root level, I included automated scripts—run_all.sh to execute all anal
    the `.streamlit/config.toml` file.
 
 ## Usage Instructions
+
 1) **Enter the project directory**: cd clinical-data-analysis-dashboard
 2) **Run the automated script to set up the database schema and perform all analyses**: chmod +x run_all.sh followed by bash run_all.sh
 3) **Run the tests to verify that the analyses completed correctly**: chmod +x run_test.sh followed by bash run_test.sh
 4) **Launch the interactive dashboard**: streamlit run code/dashboard.py
 
 ## Link to Dashboard
+
 **Link**: https://clinical-data-analysis-dashboard-mt5yefhdzzxrezbazn6lbj.streamlit.app/
