@@ -97,7 +97,7 @@ At the root level, I included automated scripts—run_all.sh to execute all anal
    `code/dashboard.py`. The app’s appearance, including theme and colors, is configured in 
    the `.streamlit/config.toml` file.
 
-## Usage Instructions On Local Machine
+## Usage Instructions
 
 1) **Install Requirements**: pip install -r requirements.txt
 2) **Run the automated script to set up the database schema and perform all analyses**: chmod +x run_all.sh followed by bash run_all.sh
