@@ -99,9 +99,10 @@ At the root level, I included automated scripts—run_all.sh to execute all anal
 
 ## Usage Instructions On Local Machine
 
-1) **Run the automated script to set up the database schema and perform all analyses**: chmod +x run_all.sh followed by bash run_all.sh
-2) **Run the tests to verify that the analyses completed correctly**: chmod +x run_test.sh followed by bash run_test.sh
-3) **Launch the interactive dashboard**: python3 -m streamlit run code/dashboard.py
+1) **Install Requirements**: pip install -r requirements.txt
+2) **Run the automated script to set up the database schema and perform all analyses**: chmod +x run_all.sh followed by bash run_all.sh
+3) **Run the tests to verify that the analyses completed correctly**: chmod +x run_test.sh followed by bash run_test.sh
+4) **Launch the interactive dashboard**: python3 -m streamlit run code/dashboard.py
 
 ## Link to Dashboard
 
