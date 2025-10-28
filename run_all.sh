@@ -28,5 +28,6 @@ echo ""
 echo "Computing cell subsets..."
 python3 code/cell_subset_analysis.py
 
+# If the script ran successfully, notify user
 echo ""
 echo "All done!"
