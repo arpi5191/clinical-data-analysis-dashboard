@@ -5,7 +5,7 @@
 This project analyzes PBMC samples from melanoma patients treated with Miraclib and generates 
 an interactive dashboard to explore and visualize key trends in immune cell populations.
 
-### Project Structure
+## Project Structure
 
 - **Root Folder**  
   Contains scripts to run the entire project end-to-end:
@@ -41,7 +41,7 @@ an interactive dashboard to explore and visualize key trends in immune cell popu
   - `test_cell_response_analysis.py` — tests PBMC sample analysis for melanoma patients treated with mircalib.
   - `test_cell_subset_analysis.py` — tests subset statistics.
 
-### Key Tasks
+## Key Tasks
 
 1. **Database setup:** Database tables are created using a designed schema in `code/db.py` to store 
    cell count and patient information.
