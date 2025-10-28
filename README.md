@@ -97,7 +97,7 @@ At the root level, I included automated scripts—run_all.sh to execute all anal
    `code/dashboard.py`. The app’s appearance, including theme and colors, is configured in 
    the `.streamlit/config.toml` file.
 
-## Usage Instructions
+## Usage Instructions On Local Machine
 
 1) **Enter the project directory**: cd clinical-data-analysis-dashboard-main
 2) **Run the automated script to set up the database schema and perform all analyses**: chmod +x run_all.sh followed by bash run_all.sh
