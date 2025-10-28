@@ -2,8 +2,25 @@
 
 ## Project Description
 
+### Motivation
+
 This project analyzes PBMC samples from melanoma patients treated with Miraclib and generates 
 an interactive dashboard to explore and visualize key trends in immune cell populations.
+
+### Architecture and Dashboard Overview
+
+#### Database Schema Design Rationale
+
+I created a table called samples in the database schema with the following fields: sample, sample_type, subject, project_id, time_from_treatment_start, treatment, condition, and response. Each sample is designated as a primary key to uniquely identify every row. The subject field is a foreign key referencing the subjects table, allowing each sample to be associated with its corresponding subject, since a subject can have multiple samples. Similarly, the project_id field is a foreign key referencing the projects table. Using an integer index for project_id rather than a string improves database performance, especially for operations such as counting the number of samples per project in large datasets.
+The sample_type and time_from_treatment_start fields are included because they pertain specifically to each sample rather than the subject as a whole. The fields treatment, condition, and response are also stored in the samples table rather than the subjects table. This design accounts for potential edge cases where a patient could have mixed treatments, conditions, or responses. While this dataset does not currently contain such cases (each subject has a single treatment, condition, and response), this schema ensures scalability and flexibility for future data.
+
+I created a table called subjects with the following fields: subject, age, and sex. Each subject is designated as a primary key to uniquely identify every row. The age and sex fields are included because they directly correspond to each individual subject. Treatments, conditions, and responses were intentionally not included in this table to account for potential edge cases where a subject might have multiple treatments, conditions, or responses.
+
+I also created a table called projects in which each project name is assigned a unique auto-incrementing integer. This allows each project to be uniquely identified and enables faster searches when querying the samples table, as integer indexes are more efficient than string-based searches.
+
+Lastly, I created a table called cell_counts with the following fields: cell_id, cell_type, sample, and count. This table stores the counts of each cell population for every sample, which is useful for identifying trends and computing per-sample frequencies. The cell_id field is an auto-incrementing primary key to uniquely identify each row. The combination of sample and cell_type is set to be unique to prevent duplicate entries. The sample field is a foreign key referencing the samples table, establishing a direct association between cell counts and their corresponding samples. This structure makes it straightforward to compute cell population frequencies for each sample.
+
+#### Scalability and Performance
 
 ## Project Structure
 
