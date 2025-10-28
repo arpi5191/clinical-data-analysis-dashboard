@@ -1,4 +1,4 @@
-# clinical-data-analysis-dashboard
+# Clinical Data Analysis Dashboard
 
 ## Project Description
 
