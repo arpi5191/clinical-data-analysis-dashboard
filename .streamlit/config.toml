@@ -1,0 +1,8 @@
+[theme]
+base="light"
+primaryColor="#4CAF50"    # Optional: main accent color
+backgroundColor="#FFFFFF"  # Optional: background color for main content
+secondaryBackgroundColor="#F0F2F6"  # Optional: secondary panels/containers
+textColor="#000000"        # Optional: text color
+font="sans serif"          # Optional: font choice (e.g., "serif", "monospace")
+
