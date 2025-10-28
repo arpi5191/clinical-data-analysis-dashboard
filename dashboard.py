@@ -7,6 +7,12 @@ import plotly.express as px
 
 class CellDataDisplay:
     """
+    Display and analyze immune cell data from melanoma PBMC samples.
+
+    Provides interactive tables and charts for:
+        - Cell population frequencies per sample
+        - Cell population frequencies comparison of responders vs. non-responders
+        - Subset summaries by project, response, and gender
     """
 
     def __init__(self, summary_file_path="cell_summary.csv", response_file_path="cell_response.csv",
@@ -120,7 +126,8 @@ class CellDataDisplay:
         st.markdown("""
         <span style='font-size:20px'>
         Compare the relative frequencies of immune cell populations between responders and non-responders.
-        Select a cell type from the dropdown to view its distribution, along with statistical significance.
+        Select a cell type from the dropdown to view its distribution. Hover over any boxplot to view
+        its statistical results.
         </span>
         """, unsafe_allow_html=True)
 
@@ -172,7 +179,7 @@ class CellDataDisplay:
         st.markdown(f"""<span style='font-size:19px; font-weight:bold'>{significance} (p-value = {p_value:.4f})
                         </span>""", unsafe_allow_html=True)
 
-        # Interactive boxplot using Plotly
+        # Set the interactive boxplot using Plotly
         fig = px.box(
             cell_df,
             x="response",
@@ -184,8 +191,10 @@ class CellDataDisplay:
             title=f"{selected_cell} Frequency by Response"
         )
 
-        # Update layout and fonts, including color bar
+        # Update the graph layout
         fig.update_layout(
+            width = 600,
+            height = 600,
             title=dict(
                 text=f"{selected_cell} Frequency by Response",
                 font=dict(size=21, color="black", family="Arial"),  # increase size here
@@ -194,17 +203,17 @@ class CellDataDisplay:
             ),
             xaxis_title=dict(
                 text="Response",
-                font=dict(size=18, color="black", family="Arial")
+                font=dict(size=19, color="black", family="Arial")
             ),
             yaxis_title=dict(
                 text="Percentage (%)",
-                font=dict(size=18, color="black", family="Arial")
+                font=dict(size=19, color="black", family="Arial")
             ),
             xaxis=dict(
-                tickfont=dict(size=15, color="black", family="Arial")
+                tickfont=dict(size=17, color="black", family="Arial")
             ),
             yaxis=dict(
-                tickfont=dict(size=15, color="black", family="Arial")
+                tickfont=dict(size=17, color="black", family="Arial")
             ),
             plot_bgcolor="rgba(0,0,0,0)",
             legend=dict(
@@ -216,37 +225,22 @@ class CellDataDisplay:
             )
         )
 
-
-
-        # # Improve layout aesthetics
-        # fig.update_layout(
-        #     title_font=dict(size=20, family="Arial", color="black"),
-        #     title_x=0.0,
-        #     xaxis_title="Response",
-        #     yaxis_title="Percentage (%)",
-        #     xaxis=dict(
-        #         title_font=dict(size=18, family="Arial", color="black"),
-        #         tickfont=dict(size=15, family="Arial", color="black")
-        #     ),
-        #     yaxis=dict(
-        #         title_font=dict(size=18, family="Arial", color="black"),
-        #         tickfont=dict(size=15, family="Arial", color="black")
-        #     ),
-        #     hoverlabel=dict(font_size=14),
-        #     plot_bgcolor="white",
-        #     width=800,
-        #     height=600,
-        # )
-
         # Display in Streamlit
         st.plotly_chart(fig, use_container_width=True)
 
     def explore_baseline_subsets(self):
         """
+        Display interactive bar charts.
+
+        This method visualizes subsets of melanoma PBMC baseline samples from
+        patients treated with Miraclib. Three charts are displayed:
+            1. Number of samples per project.
+            2. Number of subjects who are responders vs. non-responders.
+            3. Number of subjects by sex (male/female).
         """
 
+        # Set the dashboard title, subheader for Part IV and markdown text to describe the visualization
         st.subheader("Part IV: Data Subset Analysis")
-
         st.markdown("""
         <span style='font-size:20px'>
         Explore subsets of melanoma PBMC baseline samples from patients treated with Miraclib to understand
@@ -255,109 +249,61 @@ class CellDataDisplay:
         </span>
         """, unsafe_allow_html=True)
 
-        fig = px.bar(
-            self.cell_project_summary_df,
-            x=self.cell_project_summary_df.columns[0],
-            y=self.cell_project_summary_df.columns[1],
-            color=self.cell_project_summary_df.columns[0],  # each bar gets a unique color
-            color_continuous_scale="Viridis"
-        )
+        # Put all the dataframes and graph titles in a list
+        dataframes = [(self.cell_project_summary_df, "Samples per Project"),
+                      (self.cell_response_summary_df, "Subjects by Response"),
+                      (self.cell_gender_summary_df, "Subjects by Gender")
+                     ]
 
-        # Update layout and fonts
-        fig.update_layout(
-            xaxis_title=dict(
-                text=self.cell_project_summary_df.columns[0].capitalize(),
-                font=dict(size=18, color="black", family="Arial")
-            ),
-            yaxis_title=dict(
-                text=self.cell_project_summary_df.columns[1].capitalize(),
-                font=dict(size=18, color="black", family="Arial")
-            ),
-            xaxis=dict(
-                tickfont=dict(size=15, color="black", family="Arial")
-            ),
-            yaxis=dict(
-                tickfont=dict(size=15, color="black", family="Arial")
-            ),
-            plot_bgcolor="rgba(0,0,0,0)",
-            legend=dict(
-                title=dict(
-                    text=self.cell_project_summary_df.columns[0],
-                    font=dict(size=20, color="black", family="Arial")
-                ),
-                font=dict(size=18, color="black", family="Arial")
+        # Iterate through each dataframe and graph title
+        for df, title in dataframes:
+
+            # Set the interactive boxplot using Plotly
+            fig = px.bar(
+                df,
+                x=df.columns[0],
+                y=df.columns[1],
+                color=df.columns[0],
+                color_continuous_scale="Viridis",
+                title=title
             )
-        )
 
-        st.plotly_chart(fig, use_container_width=True)
+            # Update the graph layout
+            fig.update_layout(
+                width = 600,
+                height = 600,
+                title=dict(
+                    text=title,
+                    font=dict(size=21, color="black", family="Arial"),
+                    x=0.5,
+                    xanchor='center'
+                ),
+                xaxis_title=dict(
+                    text=df.columns[0].capitalize(),
+                    font=dict(size=19, color="black", family="Arial")
+                ),
+                yaxis_title=dict(
+                    text=df.columns[1].capitalize(),
+                    font=dict(size=19, color="black", family="Arial")
+                ),
+                xaxis=dict(
+                    tickfont=dict(size=17, color="black", family="Arial")
+                ),
+                yaxis=dict(
+                    tickfont=dict(size=17, color="black", family="Arial")
+                ),
+                plot_bgcolor="rgba(0,0,0,0)",
+                legend=dict(
+                    title=dict(
+                        text=df.columns[0],
+                        font=dict(size=20, color="black", family="Arial")
+                    ),
+                    font=dict(size=18, color="black", family="Arial")
+                )
+            )
 
-
-        # fig = px.bar(
-        #     self.cell_project_summary_df,
-        #     x=self.cell_project_summary_df.columns[0],
-        #     y=self.cell_project_summary_df.columns[1],
-        #     color=self.cell_project_summary_df.columns[0],  # each bar gets a unique color
-        #     color_continuous_scale="Viridis"
-        # )
-        #
-        # # Update layout and fonts
-        # fig.update_layout(
-        #     xaxis_title=dict(
-        #         text=self.cell_project_summary_df.columns[0].capitalize(),
-        #         font=dict(size=18, color="black", family="Arial")
-        #     ),
-        #     yaxis_title=dict(
-        #         text=self.cell_project_summary_df.columns[1].capitalize(),
-        #         font=dict(size=18, color="black", family="Arial")
-        #     ),
-        #     plot_bgcolor="rgba(0,0,0,0)",
-        #     legend=dict(
-        #         title=dict(
-        #             text=self.cell_project_summary_df.columns[0],
-        #             font=dict(size=20, color="black", family="Arial")
-        #         ),
-        #         font=dict(size=18, color="black", family="Arial")
-        #     )
-        # )
-        #
-        # # Display in Streamlit
-        # st.plotly_chart(fig, use_container_width=True)
-
-
-        #
-        # fig.update_layout(
-        #                     legend=dict(
-        #                         title=self.cell_project_summary_df.columns[0],
-        #                         title_font=dict(size=16, family="Arial"),
-        #                         font=dict(size=14),
-        #                         itemsizing="constant",
-        #                         orientation="v",
-        #                     )
-        #                  )
-
-
-        # fig.update_layout(
-        #     xaxis_title=dict(
-        #         text=self.cell_project_summary_df.columns[0].lower(),
-        #         font=dict(size=18, color="black", family="Arial")
-        #     ),
-        #     yaxis_title=dict(
-        #         text=self.cell_project_summary_df.columns[1].lower(),
-        #         font=dict(size=18, color="black", family="Arial")
-        #     ),
-        #     plot_bgcolor="rgba(0,0,0,0)",
-        #     coloraxis_colorbar=dict(
-        #         title=dict(
-        #             text=self.cell_project_summary_df.columns[0],
-        #             font=dict(size=16, color="black", family="Arial")
-        #         ),
-        #         len=3,
-        #         thickness=50
-        #     ),
-        # )
-
-        # # Display in Streamlit
-        # st.plotly_chart(fig, use_container_width=True)
+            # Display in streamlit
+            st.plotly_chart(fig, use_container_width=True)
 
 def main():
     # Create an instance of CellResponseAnalysis
@@ -369,6 +315,8 @@ def main():
     # Compute the cell population frequencies for melanoma patients based on response
     responder.analyze_response_statistics()
 
+    # Compute the following subsets for melanoma patients: number of samples in each project,
+    # number of subjects with yes/no response, number of subjects who are M/F
     responder.explore_baseline_subsets()
 
 if __name__ == "__main__":
