@@ -14,6 +14,10 @@ an interactive dashboard to explore and visualize key trends in immune cell popu
   - `README.md` — this project documentation.  
   - `requirements.txt` — lists all required Python packages.
 
+- **.streamlit/**  
+  Contains configuration for the Streamlit app:
+  - `config.toml` — sets the theme, colors, and fonts for the dashboard.
+
 - **input/**  
   Contains input data files:
   - `cell_counts.csv` — raw cell count data for all samples.
@@ -61,4 +65,6 @@ an interactive dashboard to explore and visualize key trends in immune cell popu
    - `testing/test_cell_response_analysis.py` — tests PBMC sample analysis.  
    - `testing/test_cell_subset_analysis.py` — tests subset statistics.
 7. **Interactive visualizations:** The interactive dashboard is launched using Streamlit via 
-   `code/dashboard.py`.
+   `code/dashboard.py`. The app’s appearance, including theme and colors, is configured in 
+   the `.streamlit/config.toml` file.
+
