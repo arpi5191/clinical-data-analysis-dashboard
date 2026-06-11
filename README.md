@@ -27,6 +27,14 @@ The database is logically partitioned into separate tables representing the key 
 
 An XGBoost model was trained on immune cell count data from the database to predict melanoma patients’ responsiveness to Miraclib treatment. The Streamlit application accepts user-provided cell count data and uses the model to generate response predictions. Then, a large language model (Gemini 2.5), accessed via API, generates clinically grounded explanations interpreting how immune cell counts relate to the predicted Miraclib treatment response.
 
+#### Interactive Dashboard Features
+
+The Streamlit application provides a unified research interface split into four analytical modules:
+* 📊 **Immune Cell Population Frequencies:** Dynamic filtering of over 10k+ data points by specific sample IDs and cell types to analyze relative cell frequencies.
+* 📈 **Response-Based Biomarker Analysis:** Statistical distribution boxplots comparing relative cell frequencies in melanoma patients between drug responders and non-responders to Miraclib.
+* 🔮 **Predictive Patient Classification:** A live inference interface powered by an **XGBoost classifier** to evaluate prospective patient response scores with real-time, mechanistic immuno-oncology justifications generated via the **Gemini 2.5 API**.
+* 🧠 **Cohort Subset Analysis:** Targeted database queries partitioning Miraclib-treated baseline melanoma cohorts by project source, responder status, and gender distribution.
+
 ## Code Structure
 
 ### Project Folder Hierarchy
