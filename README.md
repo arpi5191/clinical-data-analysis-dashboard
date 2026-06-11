@@ -4,8 +4,7 @@
 
 ### Motivation
 
-This project analyzes PBMC samples from melanoma patients treated with Miraclib and generates 
-an interactive dashboard to explore and visualize key trends in immune cell populations.
+This project organizes 10,500 patient samples from a clinical trial dataset into a normalized, scalable database schema. It reports immune cell population frequencies, compares Miraclib responders and non-responders using statistical significance, explains predicted treatment responses for user-provided data, and performs cohort subset analyses across melanoma samples in an interactive Streamlit application.
 
 ### Architecture and Dashboard Overview
 
@@ -23,6 +22,10 @@ Lastly, I created a table called cell_counts with the following fields: cell_id,
 #### Scalability and Performance
 
 The database is logically partitioned into separate tables representing the key entities: samples, subjects, cell types, and projects. This structure reduces RAM usage, improves query and computation speed, and enhances performance on large datasets. For instance, a dedicated projects table allows searches using integer IDs, which are much faster than string-based searches, while a separate cell types table enables easy association of samples with their corresponding cell populations. This design promotes modularity, simplifies large-scale maintenance, and employs data normalization to minimize redundancy and ensure data integrity—both essential for scalability.
+
+#### Predictive Modeling with Generative AI
+
+An XGBoost model was trained on immune cell count data from the database to predict melanoma patients’ responsiveness to Miraclib treatment. The Streamlit application accepts user-provided cell count data and uses the model to generate response predictions. Then, a large language model (Gemini 2.5), accessed via API, generates clinically grounded explanations interpreting how immune cell counts relate to the predicted Miraclib treatment response.
 
 ## Code Structure
 
