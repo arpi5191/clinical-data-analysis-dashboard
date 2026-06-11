@@ -7,6 +7,5 @@ seaborn
 plotly
 scipy
 scikit-learn
-scikit-learn
 xgboost
 google-genai
